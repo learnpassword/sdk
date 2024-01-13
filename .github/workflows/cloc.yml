@@ -3,7 +3,7 @@ name: CLOC
 on:
   workflow_dispatch:
   push:
-    branches: ["main"]
+    branches: ["dev"]
   pull_request:
 
 jobs:

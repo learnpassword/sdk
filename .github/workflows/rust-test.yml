@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - "main"
+      - "dev"
       - "rc"
       - "hotfix-rc"
   pull_request:
