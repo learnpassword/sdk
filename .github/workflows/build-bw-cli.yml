@@ -1,5 +1,5 @@
 ---
-name: Build CLI
+name: Build bw CLI
 
 on:
   pull_request:
@@ -43,8 +43,6 @@ jobs:
           - os: ubuntu-22.04
             target: x86_64-unknown-linux-gnu
 
-          - os: ubuntu-22.04
-            target: aarch64-unknown-linux-gnu
     steps:
       - name: Checkout repo
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
@@ -60,21 +58,11 @@ jobs:
         with:
           key: ${{ matrix.settings.target }}-cargo-${{ matrix.settings.os }}
 
-      - name: Install Cross (aarch64-unknown-linux-gnu)
-        if: ${{ matrix.settings.target == 'aarch64-unknown-linux-gnu' }}
-        run: cargo install cross --locked
-
       - name: Build
         if: ${{ matrix.settings.target != 'aarch64-unknown-linux-gnu' }}
         env:
           TARGET: ${{ matrix.settings.target }}
         run: cargo build ${{ matrix.features }} -p bw --release --target=${{ matrix.settings.target }}
-
-      - name: Build (aarch64-unknown-linux-gnu)
-        if: ${{ matrix.settings.target == 'aarch64-unknown-linux-gnu' }}
-        env:
-          TARGET: ${{ matrix.settings.target }}
-        run: cross build ${{ matrix.features }} -p bw --release --target=${{ matrix.settings.target }}
 
 
   third_party:
@@ -90,18 +78,4 @@ jobs:
         uses: dtolnay/rust-toolchain@be73d7920c329f220ce78e0234b8f96b7ae60248 # stable
         with:
           toolchain: stable
-
-      - name: Cache cargo registry
-        uses: Swatinem/rust-cache@3cf7f8cc28d1b4e7d01e3783be10a97d55d483c8 # v2.7.1
-        with:
-          key: cargo-cli-about
-
-      - name: Install cargo-about
-        run: cargo install cargo-about
-
-      - name: Generate THIRDPARTY.html
-        working-directory: ./crates/bw
-        run: |
-          cargo about generate ../../about.hbs > THIRDPARTY.html
-          sed -i.bak 's/\$NAME\$/Bitwarden Secrets Manager CLI/g' THIRDPARTY.html
 
