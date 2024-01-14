@@ -76,13 +76,6 @@ jobs:
           TARGET: ${{ matrix.settings.target }}
         run: cross build ${{ matrix.features }} -p bw --release --target=${{ matrix.settings.target }}
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@c7d193f32edcb7bfad88892161225aeda64e9392 # v4.0.0
-        with:
-          name: bw-${{ matrix.settings.target }}-${{ env._PACKAGE_VERSION }}.zip
-          path: ./bw-${{ matrix.settings.target }}-${{ env._PACKAGE_VERSION }}.zip
-          if-no-files-found: error
-
 
   third_party:
     name: Generate THIRDPARTY.html
@@ -112,9 +105,3 @@ jobs:
           cargo about generate ../../about.hbs > THIRDPARTY.html
           sed -i.bak 's/\$NAME\$/Bitwarden Secrets Manager CLI/g' THIRDPARTY.html
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@c7d193f32edcb7bfad88892161225aeda64e9392 # v4.0.0
-        with:
-          name: THIRDPARTY.html
-          path: ./crates/bw/THIRDPARTY.html
-          if-no-files-found: error
